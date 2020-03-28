@@ -15,7 +15,13 @@ async function create(req, res){
 
 async function index(req, res){
 
-    const data = await connection('incidents').select('*')
+    const { page = 1 } = req.query
+
+    const data = await connection('incidents')
+        .limit(5)
+        .offset((page - 1) * 5)
+        .select('*')
+
     return res.json(data)
 
 }
