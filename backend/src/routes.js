@@ -5,18 +5,40 @@ const IncidentController = require('./controller/IncidentController')
 const ProfileController = require('./controller/ProfileController')
 const SessionController = require('./controller/SessionController')
 
+const incidentsVal = require('./validators/incidentsValidator')
+const ongVal = require('./validators/ongValidator')
+const authVal = require('./validators/authValidador')
+const profileVal = require('./validators/profileValidator')
+
 const routes = express.Router();
 
+/** 
+ * Routes for access the data from ongs
+*/
+
 routes.get('/ongs', OngController.index)
-routes.post('/ongs', OngController.create)
+routes.post('/ongs', ongVal.createValidator, OngController.create)
 
-routes.post('/incidents', IncidentController.create)
-routes.get('/incidents', IncidentController.index)
-routes.delete('/incidents/:id', IncidentController.destroy)
+/** 
+ * Routes for access the data from incidents by ongs
+*/
 
-routes.get('/profile', ProfileController.index)
+routes.post('/incidents', incidentsVal.createIncidents, IncidentController.create)
+routes.get('/incidents', incidentsVal.getIncidents, IncidentController.index)
+routes.delete('/incidents/:id', incidentsVal.deleteIncidents, IncidentController.destroy)
 
-routes.post('/sessions', SessionController.create)
+/**  
+ * Route to get the profile from an ONG
+ * 
+*/
+
+routes.get('/profile', authVal, ProfileController.index)
+
+/**
+ * Route for identication  
+*/
+
+routes.post('/sessions', profileVal, SessionController.create)
 
 module.exports = routes;
 
